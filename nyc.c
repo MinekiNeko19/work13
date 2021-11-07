@@ -52,15 +52,34 @@ int read_csv() {
   char ogdata[sb.st_size];
   read(file, ogdata, sb.st_size);
   // printf("%s",ogdata);
+  char line[100];
+  int i = 0;
+  int j = 0;
+  int x = 0;
+  // printf("line: %s\n", line);
 
   if (errno) {
     printf("error %d: %s\n", errno, strerror(errno));
   } else {
-    int ogcopy = open("nyc_pop.data", O_WRONLY | O_APPEND | O_CREAT, 0644);
+    // int ogcopy = open("nyc_pop.data", O_WRONLY | O_APPEND | O_CREAT, 0644);
 
-    struct pop_entry data;
-
-    close(ogcopy);
+    // converting data into lines
+    while (i != sb.st_size) {
+      if (ogdata[i] != '\n') {
+        if (j) {
+          line[x] = ogdata[i];
+          x++;
+        }
+      } else {
+        // printf("line: %s\n", line);
+        j++;
+        x = 0;
+      }
+      i++;
+    }
+    printf("line: %s\n", line);
+    
+    // close(ogcopy);
   }
 
   close(file);
