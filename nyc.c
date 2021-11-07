@@ -15,31 +15,12 @@ struct pop_entry {
 int main(int argc, char *argv[]) {
     char instruct[100];
     char line[100];
+
+  strcpy(instruct, argv[1]);
+  printf("received instructions: %s\n", instruct);
+
     if (argv[1]) {
-
-      // preparing to scan the file 
-      strcpy(instruct, argv[1]);
-      printf("received instructions: %s\n", instruct);
-
-      int file = open("nyc_pop.csv", O_RDONLY, 0);
-      struct stat sb;
-      stat("nyc_pop.csv", &sb);
-      printf("size of data: %lu\n", sb.st_size);
-
-      char ogdata[sb.st_size];
-      read(file, ogdata, sb.st_size);
-      // printf("%s",ogdata);
-      int i = 0;
-      printf("%d\n",i);
-      while(ogdata[i] != '\n') {
-        i++;
-      }
-      printf("%d\n",i);
-  
-      if (errno) {
-        printf("error %d: %s\n", errno, strerror(errno));
-      }
-      else if (!strcmp(instruct, "-read_csv")) {
+      if (!strcmp(instruct, "-read_csv")) {
         read_csv();
       // }
       // else if (!strcmp(instruct, "-read_data")) {
@@ -53,15 +34,37 @@ int main(int argc, char *argv[]) {
       } else {
         printf("%s is an invalid action call\n", argv[1]);
       }
-
-      close(ogdata);
     }
     return 0;
 }
 
 // temporary return types
-void read_csv() {
+int read_csv() {
   printf("read_csv called\n");
+
+ // preparing to scan the file 
+
+  int file = open("nyc_pop.csv", O_RDONLY, 0);
+  struct stat sb;
+  stat("nyc_pop.csv", &sb);
+  printf("size of data: %lu\n", sb.st_size);
+
+  char ogdata[sb.st_size];
+  read(file, ogdata, sb.st_size);
+  // printf("%s",ogdata);
+
+  if (errno) {
+    printf("error %d: %s\n", errno, strerror(errno));
+  } else {
+    int ogcopy = open("nyc_pop.data", O_WRONLY | O_APPEND | O_CREAT, 0644);
+
+    struct pop_entry data;
+
+    close(ogcopy);
+  }
+
+  close(file);
+  return errno;
 }
 // void read_data() {
 //   printf("read_data called\n");  
