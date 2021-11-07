@@ -81,39 +81,38 @@ int read_csv() {
           int bx;
           int si;
           sscanf(line, "%d,%d,%d,%d,%d,%d", &y,&m,&bn,&q,&bx,&si);
-          printf("year: %d\tm: %d\tbn: %d\tq: %d\tbx: %d\tsi: %d\n", y,m,bn,q,bx,si);
+          // printf("j: %d\tyear: %d\tm: %d\tbn: %d\tq: %d\tbx: %d\tsi: %d\n", j,y,m,bn,q,bx,si);
           int c;
 
           for (c = 0; c < 5; c++) {
             struct pop_entry d;
             d.year = y;
-            if (c = 0) {
+            if (c == 0) {
               d.population = m;
               strncpy(d.boro, "Manhattan",15);
             }
-            if (c = 1) {
+            if (c == 1) {
               d.population = bn;
               strncpy(d.boro, "Brooklyn",15);
             }
-            if (c = 2) {
+            if (c == 2) {
               d.population = q;
               strncpy(d.boro, "Queens",15);
             }
-            if (c = 3) {
+            if (c == 3) {
               d.population = bx;
               strncpy(d.boro, "Bronx",15);
             }
-            if (c = 4) {
+            if (c == 4) {
               d.population = si;
               strncpy(d.boro, "Staten Island",15);
             }
-            // printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
+            printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
             write(ogcopy, &d, sizeof(struct pop_entry));
           }
         }
         j++;
-        x = 0;
-        
+        x = 0;        
       }
       i++;
     }
