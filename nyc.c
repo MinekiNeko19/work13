@@ -56,7 +56,7 @@ int read_csv() {
   int j = 0;
   int x = 0;
   // printf("line: %s\n", line);
-  printf("%s\n",ogdata);
+  // printf("%s\n",ogdata);
 
   if (errno) {
     printf("error %d: %s\n", errno, strerror(errno));
@@ -107,7 +107,7 @@ int read_csv() {
               d.population = si;
               strncpy(d.boro, "Staten Island",15);
             }
-            printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
+            // printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
             write(ogcopy, &d, sizeof(struct pop_entry));
           }
         }
@@ -134,7 +134,13 @@ void read_data() {
   struct pop_entry d[sb.st_size/sizeof(struct pop_entry)];
   printf("number of entries: %lu\n", sb.st_size/sizeof(struct pop_entry));
   int ogcopy = open("nyc_pop.data", O_RDONLY, 0);
-  printf("year: %d, pop: %d, boro: %s\n", d[0].year, d[0].population, d[0].boro);
+  read(ogcopy,d,sb.st_size);
+  // printf("year: %d, pop: %d, boro: %s\n", d[0].year, d[0].population, d[0].boro);
+  int i = 0;
+  while (i < sb.st_size/sizeof(struct pop_entry)) {
+    printf("%d:\tyear: %d\t pop: %d\t boro: %s\n", i, d[i].year, d[i].population, d[i].boro);
+    i++;
+  }
   close(ogcopy);
 }
 // void add_data() {
