@@ -22,9 +22,9 @@ int main(int argc, char *argv[]) {
     if (argv[1]) {
       if (!strcmp(instruct, "-read_csv")) {
         read_csv();
-      // }
-      // else if (!strcmp(instruct, "-read_data")) {
-      //   read_data();
+      }
+      else if (!strcmp(instruct, "-read_data")) {
+        read_data();
       // }
       // else if (!strcmp(instruct, "-add_data")) {
       //   add_data();
@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// temporary return types
 int read_csv() {
   printf("read_csv called\n");
 
@@ -114,7 +113,6 @@ int read_csv() {
       i++;
     }
     
-    
     // printf("line: %s\n", line);
     // printf("i: %d sb.st_size: %lu\n", i, sb.st_size);
     
@@ -124,9 +122,17 @@ int read_csv() {
   close(file);
   return errno;
 }
-// void read_data() {
-//   printf("read_data called\n");  
-// }
+void read_data() {
+  printf("read_data called\n");
+  struct stat sb;
+  stat("nyc_pop.data", &sb);
+
+  struct pop_entry d[sb.st_size/sizeof(struct pop_entry)];
+  printf("number of entries: %lu\n", sb.st_size/sizeof(struct pop_entry));
+  int ogcopy = open("nyc_pop.data", O_RDONLY, 0);
+  printf("year: %d, pop: %d, boro: %s\n", d[0].year, d[0].population, d[0].boro);
+  close(ogcopy);
+}
 // void add_data() {
 //   printf("add_data called\n");  
 // }
