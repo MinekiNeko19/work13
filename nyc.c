@@ -61,7 +61,7 @@ int read_csv() {
   if (errno) {
     printf("error %d: %s\n", errno, strerror(errno));
   } else {
-    int ogcopy = open("nyc_pop.data", O_WRONLY | O_APPEND | O_CREAT, 0644);
+    int ogcopy = open("nyc_pop.data", O_WRONLY | O_CREAT, 0644);
 
     // converting data into lines
     while (i != sb.st_size+1) {
@@ -84,25 +84,30 @@ int read_csv() {
         struct pop_entry d;
         d.year = y;
 
-        d.population = m;
-        strncpy(d.boro, "Manhattan",15);
-        printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
-        
-        d.population = bn;
-        strncpy(d.boro, "Brooklyn",15);
-        printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
-        
-        d.population = q;
-        strncpy(d.boro, "Queens",15);
-        printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
-        
-        d.population = bx;
-        strncpy(d.boro, "Bronx",15);
-        printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
-        
-        d.population = si;
-        strncpy(d.boro, "Staten Island",15);
-        printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
+        for (c = 0; c < 5; c++) {
+          if (c = 0) {
+            d.population = m;
+            strncpy(d.boro, "Manhattan",15);
+          }
+          if (c = 1) {
+            d.population = bn;
+            strncpy(d.boro, "Brooklyn",15);
+          }
+          if (c = 2) {
+            d.population = q;
+            strncpy(d.boro, "Queens",15);
+          }
+          if (c = 3) {
+            d.population = bx;
+            strncpy(d.boro, "Bronx",15);
+          }
+          if (c = 4) {
+            d.population = si;
+            strncpy(d.boro, "Staten Island",15);
+          }
+          // printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
+          write(ogcopy, &d, sizeof(struct pop_entry));
+        }
         j++;
         x = 0;
       }
@@ -110,8 +115,8 @@ int read_csv() {
     }
     
     
-    printf("line: %s\n", line);
-    printf("i: %d sb.st_size: %lu\n", i, sb.st_size);
+    // printf("line: %s\n", line);
+    // printf("i: %d sb.st_size: %lu\n", i, sb.st_size);
     
     close(ogcopy);
   }
