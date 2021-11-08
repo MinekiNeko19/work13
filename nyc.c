@@ -27,22 +27,22 @@ int main(int argc, char *argv[]) {
 }
 
 int read_csv() {
-  printf("\nread_csv called\n");
+  // printf("\nread_csv called\n");
 
  // preparing to scan the file 
-
   int file = open("nyc_pop.csv", O_RDONLY, 0);
   struct stat sb;
   stat("nyc_pop.csv", &sb);
   printf("size of data: %lu\n", sb.st_size);
+  int bytes = 0;
 
   char ogdata[sb.st_size];
   read(file, ogdata, sb.st_size);
   // printf("%s",ogdata);
   char line[100];
-  int i = 0;
-  int j = 0;
-  int x = 0;
+  int i = 0; // each byte
+  int j = 0; // each line
+  int x = 0; // each byte in line
   // printf("line: %s\n", line);
   // printf("%s\n",ogdata);
 
@@ -61,6 +61,8 @@ int read_csv() {
         }
       } else {
         // printf("line: %s\n", line);
+
+        // converting data into struct pop_entry, writing into data file
         if (j) {
           int y;
           int m;
@@ -97,6 +99,7 @@ int read_csv() {
             }
             // printf("pop_entry: y: %d, pop: %d, boro: %s\n", d.year, d.population, d.boro);
             write(ogcopy, &d, sizeof(struct pop_entry));
+            bytes += sizeof(struct pop_entry);
           }
         }
         j++;
@@ -107,7 +110,7 @@ int read_csv() {
     
     // printf("line: %s\n", line);
     // printf("i: %d sb.st_size: %lu\n", i, sb.st_size);
-    
+    printf("%d bytes written into nyc_pop.data\n", bytes);
     close(ogcopy);
   }
 
@@ -116,12 +119,15 @@ int read_csv() {
 }
 
 void read_data() {
-  printf("\nread_data called\n");
+  // printf("\nread_data called\n");
   struct stat sb;
   stat("nyc_pop.data", &sb);
 
+  // the array
   struct pop_entry d[sb.st_size/sizeof(struct pop_entry)];
   printf("number of entries: %lu\n", sb.st_size/sizeof(struct pop_entry));
+
+  // writing into the array
   int ogcopy = open("nyc_pop.data", O_RDONLY, 0);
   read(ogcopy,d,sb.st_size);
   // printf("year: %d, pop: %d, boro: %s\n", d[0].year, d[0].population, d[0].boro);
@@ -134,7 +140,7 @@ void read_data() {
 }
 
 void add_data() {
-  printf("\nadd_data called\n");
+  // printf("\nadd_data called\n");
 
   int file = open("nyc_pop.data", O_WRONLY | O_APPEND, 0);
 
@@ -145,7 +151,7 @@ void add_data() {
   fgets(input, sizeof(input), stdin);
   sscanf(input,"%d %s %d",&d.year,d.boro,&d.population);
 
-  // printf("year: %d\tpopulation: %d\tboro: %s\n",d.year,d.population,d.boro);
+  printf("added to nyc_pop.data: year: %d\tpopulation: %d\tboro: %s\n",d.year,d.population,d.boro);
   write(file,&d,sizeof(struct pop_entry));
 
   close(file);
@@ -181,11 +187,11 @@ void update_data() {
   fgets(buffer, sizeof(buffer), stdin);
   sscanf(buffer, "%d %s %d", &fixit.year, fixit.boro, &fixit.population);
   
-  printf("%d:\tyear: %d\t pop: %d\t boro: %s\n", entry, d[entry].year, d[entry].population, d[entry].boro);
+  printf("Original: %d:\tyear: %d\t pop: %d\t boro: %s\n", entry, d[entry].year, d[entry].population, d[entry].boro);
   d[entry].year = fixit.year;
   d[entry].population = fixit.population;
   strncpy(d[entry].boro,fixit.boro,15);
-  printf("%d:\tyear: %d\t pop: %d\t boro: %s\n", entry, d[entry].year, d[entry].population, d[entry].boro);
+  printf("Updated: %d:\tyear: %d\t pop: %d\t boro: %s\n", entry, d[entry].year, d[entry].population, d[entry].boro);
 
   int j = 0;
   while(j < sb.st_size/sizeof(struct pop_entry)) {
