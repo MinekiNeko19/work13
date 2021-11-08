@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-
-struct pop_entry {
-  int year;
-  int population;
-  char boro[15];
-};
+#include "nyc.h"
 
 int main(int argc, char *argv[]) {
     char instruct[100];
@@ -25,9 +13,9 @@ int main(int argc, char *argv[]) {
       }
       else if (!strcmp(instruct, "-read_data")) {
         read_data();
-      // }
-      // else if (!strcmp(instruct, "-add_data")) {
-      //   add_data();
+      }
+      else if (!strcmp(instruct, "-add_data")) {
+        add_data();
       // }
       // else if (!strcmp(instruct, "-updata_data")) {
       //   updata_data();
@@ -39,7 +27,7 @@ int main(int argc, char *argv[]) {
 }
 
 int read_csv() {
-  printf("read_csv called\n");
+  printf("\nread_csv called\n");
 
  // preparing to scan the file 
 
@@ -127,7 +115,7 @@ int read_csv() {
   return errno;
 }
 void read_data() {
-  printf("read_data called\n");
+  printf("\nread_data called\n");
   struct stat sb;
   stat("nyc_pop.data", &sb);
 
@@ -143,9 +131,31 @@ void read_data() {
   }
   close(ogcopy);
 }
-// void add_data() {
-//   printf("add_data called\n");  
-// }
+void add_data() {
+  printf("\nadd_data called\n");
+
+  int file = open("nyc_pop.data", O_WRONLY | O_APPEND, 0);
+
+  struct pop_entry d;
+
+  char input[100];
+  printf("Enter the year: ");
+  fgets(input, sizeof(input), stdin);
+  sscanf(input,"%d",&d.year);
+
+
+  printf("Enter the borough: ");
+  fgets(input, sizeof(input), stdin);
+  sscanf(input,"%s",d.boro);
+  
+  printf("Enter the population: ");
+  fgets(input, sizeof(input), stdin);
+  sscanf(input,"%d",&d.population);
+
+  printf("year: %d\tpopulation: %d\tboro: %s\n",d.year,d.population,d.boro);
+
+  close(file);
+}
 // void updata_data() {
 //   printf("updata_data called\n");
 // }
