@@ -152,7 +152,8 @@ void add_data() {
   fgets(input, sizeof(input), stdin);
   sscanf(input,"%d",&d.population);
 
-  printf("year: %d\tpopulation: %d\tboro: %s\n",d.year,d.population,d.boro);
+  // printf("year: %d\tpopulation: %d\tboro: %s\n",d.year,d.population,d.boro);
+  write(file,&d,sizeof(struct pop_entry));
 
   close(file);
 }
